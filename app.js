@@ -5,40 +5,34 @@ const bodyParser = require("body-parser");
 
 const app = express();
 
-
+let items=["buy food","cook food","eat food"];
 app.set('view engine', 'ejs');
+
+app.use(bodyParser.urlencoded({extended: true}));
+app.use('/public', express.static(__dirname + '/public'));
+
 
 
 app.get("/", function (req, res) {
 
 
-    var today = new Date();
-    var currentday = today.getDay();
-    var day="";
-if(currentday===6){
-    day="Saturday";
-    res.render('list', {kindOfDay: day});
-}else if(currentday===0){
-    day="Sunday";
-    res.render('list', {kindOfDay: day});
-}else if(currentday===1){
-    day="Monday";
-    res.render('list', {kindOfDay: day});
-}else if(currentday===2){   
-    day="Tuesday";
-    res.render('list', {kindOfDay: day});
-}else if(currentday===3){
-    day="Wednesday";
-    res.render('list', {kindOfDay: day});
-}else if(currentday===4){
-    day="Thursday";
-    res.render('list', {kindOfDay: day});
-}else if(currentday===5){
-    day="Friday";
-    res.render('list', {kindOfDay: day});
-}
+    let today = new Date();
+    let options = {
+    weekday:"long",
+    day:"numeric",
+    month:"long"
+    };
+let day = today.toLocaleDateString("en-US", options);
+res.render("list", {kindOfDay: day, newListItems: items});
+
 });
 
+app.post("/", function(req, res){
+    let item = req.body.newItem;
+    items.push(item);
+    res.redirect("/");
+}
+);
 
 
 
